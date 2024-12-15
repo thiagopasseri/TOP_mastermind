@@ -44,14 +44,17 @@ module GameLogic
     end
   end
   
-  def solve(arr, key)
+  def solve(arr)
     cont = 0
-    while(arr.length != 1)
+    loop do
+      puts "arr = #{arr}"
       attempt = arr[0]
-      reduce_group(arr, attempt, black(attempt, key), white(attempt, key))
+      @solve_array << attempt.chars
+      reduce_group(arr, attempt, black(attempt, @key), white(attempt, @key))
+      @solve_array << arr[0].chars if arr.length == 1
       cont += 1
-      p arr
-      p cont
+      # p cont
+      break if (arr.length == 1)
     end
     arr[0]
   end

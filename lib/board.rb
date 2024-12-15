@@ -1,6 +1,6 @@
 class Board
-  attr_accessor :rows, :num_rows
-  attr_reader :all_attempts, :num_pieces, :turn
+  attr_accessor :rows, :num_rows, :key, :solve_array, :turn
+  attr_reader :all_attempts, :num_pieces
 
   include GameLogic # terminei aqui
 
@@ -11,17 +11,12 @@ class Board
     @rows = Array.new(num_rows){ Array.new(num_pieces,nil) }
     @all_attempts = self.get_all_attempts(num_pieces)
     @key = @all_attempts.sample
+    @solve_array = []
 
     @turn = 0
     @current_play
   end
 
-  def display
-    # p @rows
-    @rows.reverse.each do |row|
-      print_row(row)
-    end
-  end
 
   def generate_key
     @key = @all_attempts.sample
@@ -38,9 +33,17 @@ class Board
   def draw_bar
     puts "|#{"-"*(4*@num_pieces - 1)}|#{"-"*@num_pieces}"
   end
+
+  def display
+    puts "rows: #{@rows}" 
+    @rows.reverse.each do |row|
+      print_row(row)
+    end
+  end
   
   def print_row(row)
     print "|"
+    # puts row
     row.each_with_index do |piece, index|
       piece = piece == nil ? "   ": " #{piece} "
       if index == @num_pieces - 1
@@ -56,7 +59,7 @@ class Board
   def good_play?
     # puts "@current_play: #{@current_play}"
     has_minimum_digits = @current_play.length >= @num_pieces
-    puts "has min dig: #{has_minimum_digits}"  
+    # puts "has min dig: #{has_minimum_digits}"  
     has_right_digits = @current_play[0, @num_pieces].all? { |item| item.to_i.between?(1, @num_pieces) }
     has_minimum_digits && has_right_digits
   end
@@ -75,7 +78,7 @@ class Board
   end
 
   def end_game?
-    @turn == @num_rows || @current_play.join == @key
+    @turn == @num_rows || @rows[@turn].join == @key
   end
 
 end
